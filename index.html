@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZOMBIE SURVIVAL</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <canvas id="c"></canvas>
+
+  <!-- HUD -->
+  <div id="ui">
+    <div id="hud-top">
+      <div class="wave-badge"><span>WAVE</span><span id="wave-num">1</span></div>
+      <div id="kill-counter"><span>KILLS</span><b id="kill-num">0</b></div>
+      <div id="kill-counter"><span>SCORE</span><b id="score-num">0</b></div>
+      <div id="timer-wrap" style="display:none">
+        <span class="stat-label">TIME</span>
+        <span id="timer-val" style="font-family:'Share Tech Mono',monospace;font-size:20px;color:#39ff14">10:00</span>
+      </div>
+    </div>
+
+    <div id="hud-bottom-left">
+      <div class="stat-label">HEALTH</div>
+      <div class="bar-bg" style="margin-bottom:8px">
+        <div class="bar-fill" id="hp-bar" style="width:100%"></div>
+        <div class="bar-val" id="hp-val">100</div>
+      </div>
+      <div class="stat-label">ARMOR</div>
+      <div class="bar-bg">
+        <div class="bar-fill" id="armor-bar" style="width:100%"></div>
+        <div class="bar-val" id="armor-val">100</div>
+      </div>
+    </div>
+
+    <div id="hud-bottom-right">
+      <div id="weapon-name">PISTOL</div>
+      <div id="ammo-display">
+        <span id="ammo-cur">12</span>
+        <span class="reserve">/ <span id="ammo-res">60</span></span>
+      </div>
+      <div id="reload-bar-wrap">
+        <div class="stat-label" style="text-align:right">RELOADING</div>
+        <div class="bar-bg"><div class="bar-fill" id="reload-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div id="weapon-slots">
+      <div class="wslot active" id="ws0">[ 1 ] PISTOL</div>
+      <div class="wslot" id="ws1">[ 2 ] SHOTGUN</div>
+      <div class="wslot" id="ws2">[ 3 ] RIFLE</div>
+      <div class="wslot" id="ws3">[ 4 ] SNIPER</div>
+      <div class="wslot" id="ws4">[ 5 ] SMG</div>
+    </div>
+
+    <div id="crosshair"><div class="dot"></div></div>
+
+    <div id="messages">
+      <div id="wave-announce"></div>
+      <div id="wave-sub"></div>
+    </div>
+
+    <div id="killfeed"></div>
+  </div>
+
+  <div id="blood-overlay"></div>
+  <div id="vignette"></div>
+  <div id="scanlines"></div>
+
+  <!-- MAIN MENU / GAME OVER -->
+  <div id="overlay-screen">
+    <div id="overlay-title">ZOMBIE<br>SURVIVAL</div>
+    <div id="overlay-sub">SURVIVE AS LONG AS YOU CAN</div>
+    <div id="overlay-stats"></div>
+
+    <!-- MAP + MODE SELECTORS -->
+    <div id="menu-selectors">
+
+      <!-- MAP SELECT -->
+      <div class="selector-group">
+        <div class="selector-label">SELECT MAP</div>
+        <div class="selector-row" id="map-selector">
+          <button class="sel-btn active" data-map="city">
+            <span class="sel-icon">🏙️</span>
+            <span class="sel-name">CITY RUINS</span>
+            <span class="sel-desc">Urban cover</span>
+          </button>
+          <button class="sel-btn" data-map="forest">
+            <span class="sel-icon">🌲</span>
+            <span class="sel-name">DEAD FOREST</span>
+            <span class="sel-desc">Dense trees</span>
+          </button>
+          <button class="sel-btn" data-map="laboratory">
+            <span class="sel-icon">🧪</span>
+            <span class="sel-name">BIO LABORATORY</span>
+            <span class="sel-desc">Tight corridors</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MODE SELECT -->
+      <div class="selector-group">
+        <div class="selector-label">SELECT MODE</div>
+        <div class="selector-row" id="mode-selector">
+          <button class="sel-btn active" data-mode="survival">
+            <span class="sel-icon">🛡️</span>
+            <span class="sel-name">SURVIVAL</span>
+            <span class="sel-desc">Classic waves</span>
+          </button>
+          <button class="sel-btn" data-mode="horde">
+            <span class="sel-icon">💀</span>
+            <span class="sel-name">HORDE RUSH</span>
+            <span class="sel-desc">Endless swarm</span>
+          </button>
+          <button class="sel-btn" data-mode="laststand">
+            <span class="sel-icon">⚡</span>
+            <span class="sel-name">LAST STAND</span>
+            <span class="sel-desc">∞ ammo · 10min</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end menu-selectors -->
+
+    <button class="big-btn" id="start-btn">▶ START GAME</button>
+
+    <div id="controls-hint">
+      <span class="hint-key">WASD</span> Move &nbsp;
+      <span class="hint-key">MOUSE</span> Aim &nbsp;
+      <span class="hint-key">CLICK</span> Shoot &nbsp;
+      <span class="hint-key">R</span> Reload &nbsp;
+      <span class="hint-key">1-5</span> Weapons &nbsp;
+      <span class="hint-key">SHIFT</span> Sprint
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/weapons.js"></script>
+  <script src="js/zombies.js"></script>
+  <script src="js/pickups.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/game.js"></script>
+
+  <script>
+    // Map selector
+    document.querySelectorAll('#map-selector .sel-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#map-selector .sel-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMap = btn.dataset.map;
+      });
+    });
+
+    // Mode selector
+    document.querySelectorAll('#mode-selector .sel-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#mode-selector .sel-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+        // Update color accent
+        const mode = GAME_MODES[currentMode];
+        document.getElementById('overlay-title').style.color = mode.color;
+      });
+    });
+  </script>
+</body>
+</html>
